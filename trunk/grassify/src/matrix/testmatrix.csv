@@ -1,0 +1,49 @@
+Unitname;Unitclass;Unittype;Description;Phase;Later than;Earlier than;Equal to;Part of
+1;context;layer;;Phase 1;14, 2, 3, 4;201;;G1
+101;context;pit fill;;Phase 2;102;201;;G2, W1
+102;context;pit fill;;Phase 2;103;101;;G2, W1
+103;context;pit fill;;Phase 2;120;102;;G2, W1
+120;context;pit fill;;Phase 2;121;103;;G3, W1
+121;context;pit fill;;Phase 2;122;120;;G3, W1
+122;context;pit fill;;Phase 2;401;121;;G3, W1
+14;context;;;Phase 1;8, 8a;1;4;G1
+2;context;layer;;Phase 1;7;1;;G1
+201;context;posthole;;Phase 1;1, 101;;;G5
+202;context;posthole;;Phase 1;;;;G5
+203;context;posthole;;Phase 1;241, 243;;;G5
+241;context;;;Phase 1;244, 245, 246;203;;G6
+242;context;;;Phase 1;244, 245, 246;;;G6
+243;context;;;Phase 1;244, 245, 246, 247;203;;G6
+244;context;;;Phase 1;248;241, 242, 243;;G6
+245;context;;;Phase 1;251;241, 242, 243;;G6
+246;context;;;Phase 1;251;241, 242, 243;;G6
+247;context;;;Phase 1;Rock;243;;G6
+248;context;;;Phase 1;249, 250;244;;G6
+249;context;;;Phase 1;251;248;;G6
+250;context;;;Phase 1;251;248;;G6
+251;context;;;Phase 1;301, 310;245, 246, 249, 250;;G6
+3;context;layer;;Phase 1;5;1;;G1
+301;context;post hole fill;;Phase 2;302, 311;251;;G7
+302;context;post hole interface;;Phase 2;401;301, 310;;G7
+310;context;post hole fill;;Phase 2;302, 311;251;;G8
+311;context;post hole interface;;Phase 2;401;301, 310;;G8
+4;context;layer;;Phase 1;8, 8a;1;14;G1
+401;context;post hole fill;;Phase 3;402;122, 302, 311;;G9
+402;context;post hole interface;;Phase 3;Rock;401;;G9
+5;context;layer;;Phase 1;6;3;;G1
+6;context;layer;;Phase 1;7;5;;G1
+7;context;layer;;Phase 1;9;2, 6;;G1
+8;context;layer;;Phase 1;9;14, 4;8a;G1
+8a;context;layer;;Phase 1;;14, 4;8;G1
+9;context;layer;;Phase 1;Rock;7, 8;;G1
+G1;group;;;Phase 1;;;;
+G2;group;;;Phase 2;;;;G4
+G3;group;;;Phase 2;;;;G4
+G4;group;;;Phase 2;;;;
+G5;group;;;Phase 1;;;;
+G6;group;;;Phase 1;;;;
+G7;group;post hole;;Phase 2;;;;
+G8;group;post hole;;Phase 2;;;;
+G9;group;post hole;;Phase 3;;;;
+Rock;context;;;Phase 3;;247, 402, 9;;
+W1;work area;;all pit fills;;;;;

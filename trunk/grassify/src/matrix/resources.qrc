@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/grassify" >
+        <file>icon.xpm</file>
+    </qresource>
+</RCC>
