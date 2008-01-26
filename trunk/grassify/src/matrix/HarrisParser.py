@@ -1,5 +1,12 @@
 from Node import *
 from Graph import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+ 
+from qgis.core import *
+ 
+# initialize Qt resources from file resouces.py
+import resources
 
 class HarrisParser:
 
