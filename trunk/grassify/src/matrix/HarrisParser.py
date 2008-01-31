@@ -1,5 +1,5 @@
-from Node import *
-from Graph import *
+#from Node import *
+from HarrisGraph import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
  
@@ -39,7 +39,8 @@ class HarrisParser:
 
     def run(self):
         # create and show a configuration dialog or something similar
-        print "grassify-import: run called!"
+        # print "grassify-import: run called!"
+        self.parse()
 
     def renderTest(self, painter):
         # use painter for drawing to map canvas
@@ -48,14 +49,38 @@ class HarrisParser:
     def parse(self):
         path = raw_input("Bitte Pfad zur csv-Datein angeben: ")
         fobj = open(path, "r")
+        graph = HarrisGraph()
+        # Knoten hinzufuegen
         for line in fobj:
             line = line.strip()
             stratum = line.split(";")
+            if stratum[1] == "context":
+                graph.add_node(stratum[0], stratum[1], stratum[2], stratum[3], stratum[4])
+        # Kanten hinzufuegen
+        fobj.close()
+        fobj = open(path, "r")
+        for line in fobj:
+            line = line.strip()
+            stratum = line.split(";")
+            unitname = stratum[0]
             later = set(stratum[5].split(", "))
-            earlier = set(stratum[6].split(", "))
-            equal = set(stratum[7].split(", "))
-            partof = set(stratum[8].split(", "))
-            nodes[stratum[0]] = Node(stratum[0], stratum[1], stratum[2], stratum[3], stratum[4], later, earlier, equal, partof)
-            fobj.close()
-        graph = Graph(nodes)
-        graph.printGraph() 
+            if stratum[1] == "context":
+                for node in later:
+                    graph.add_edge(unitname, node, "later")
+                earlier = set(stratum[6].split(", "))
+                for node in earlier:
+                    graph.add_edge(node, unitname, "earlier")
+                equal = set(stratum[7].split(", "))
+                for node in equal:
+                    graph.add_edge(unitname, node, "concurrent")
+                partof = set(stratum[8].split(", "))
+                for node in partof:
+                    graph.add_edge(unitname, node, "concurrent")            
+        fobj.close()
+        print graph.string() # print to screen
+        graph.write("matrix.dot") # write to simple.dot
+        print "Wrote matrix.dot"
+        graph.layout()
+        graph.draw('matrix.png') # draw to png 
+        print "Wrote matrix.png"
+        

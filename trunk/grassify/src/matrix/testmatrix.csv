@@ -1,4 +1,3 @@
-Unitname;Unitclass;Unittype;Description;Phase;Later than;Earlier than;Equal to;Part of
 1;context;layer;;Phase 1;14, 2, 3, 4;201;;G1
 101;context;pit fill;;Phase 2;102;201;;G2, W1
 102;context;pit fill;;Phase 2;103;101;;G2, W1
