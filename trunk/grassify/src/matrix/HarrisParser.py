@@ -66,21 +66,25 @@ class HarrisParser:
             later = set(stratum[5].split(", "))
             if stratum[1] == "context":
                 for node in later:
-                    graph.add_edge(unitname, node, "later")
+                    if node != "":
+                        graph.add_edge(unitname, node, "later")
                 earlier = set(stratum[6].split(", "))
                 for node in earlier:
-                    graph.add_edge(node, unitname, "earlier")
+                    if node != "":
+                        graph.add_edge(node, unitname, "earlier")
                 equal = set(stratum[7].split(", "))
-                for node in equal:
-                    graph.add_edge(unitname, node, "concurrent")
-                partof = set(stratum[8].split(", "))
-                for node in partof:
-                    graph.add_edge(unitname, node, "concurrent")            
+#                for node in equal:
+#                    if node != "":
+#                        graph.add_edge(unitname, node, "concurrent")
+#                partof = set(stratum[8].split(", "))
+#                for node in partof:
+#                    if node != "":
+#                        graph.add_edge(unitname, node, "concurrent")            
         fobj.close()
         print graph.string() # print to screen
         graph.write("matrix.dot") # write to simple.dot
         print "Wrote matrix.dot"
-        graph.layout()
+        graph.layout(prog='dot')
         graph.draw('matrix.png') # draw to png 
         print "Wrote matrix.png"
         

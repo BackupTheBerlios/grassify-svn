@@ -3,7 +3,7 @@ from pygraphviz import *
 class HarrisGraph(AGraph):
     
     def __init__(self):
-        AGraph.__init__(self)
+        AGraph.__init__(self, directed=True)
         self.__unitclass = {}
         self.__unittype = {}
         self.__description = {}
