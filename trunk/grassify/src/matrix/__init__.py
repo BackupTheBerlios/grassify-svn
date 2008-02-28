@@ -8,7 +8,7 @@ def version():
     return "Version 0.1"
 
 def classFactory(iface):
-    # load parser class from file HarrisParser.py
-    from HarrisParser import *
+    # load parser class from file GrassifyPlugin.py
+    from GrassifyPlugin import *
 
-    return HarrisParser(iface)
+    return GrassifyPlugin(iface)

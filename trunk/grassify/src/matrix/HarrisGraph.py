@@ -3,7 +3,7 @@ from pygraphviz import *
 class HarrisGraph(AGraph):
     
     def __init__(self):
-        AGraph.__init__(self, directed=True)
+        AGraph.__init__(self)
         self.__unitclass = {}
         self.__unittype = {}
         self.__description = {}
@@ -18,7 +18,7 @@ class HarrisGraph(AGraph):
         self.__phase[unitname] = phase or ""
         self.__location[unitname] = location or [0.0, 0.0]
         
-           
+          
 #    def __init__(self, nodes=None):
 #        self.nodes = nodes or {}
 #        
