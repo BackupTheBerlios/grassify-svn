@@ -1,24 +1,24 @@
-#from Node import *
-import sys
-from HarrisParser import *
+#System Imports
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
- 
 from qgis.core import *
- 
 # initialize Qt resources from file resouces.py
 import resources
+
+
+#import Package classes
+from HarrisParser import *
 
 class GrassifyPlugin:
 
     def __init__(self, iface):
         # save reference to the QGIS interface
         self.iface = iface
-        self.nodes = {}
+#        self.nodes = {}
 
     def initGui(self):
         # create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/grassify/icon.xpm"), "grassify plugin", self.iface.getMainWindow())
+        self.action = QAction(QIcon(":/plugins/grassifyplugin/icon.xpm"), "grassify plugin", self.iface.getMainWindow())
         self.action.setWhatsThis("Configuration for grassify plugin")
         QObject.connect(self.action, SIGNAL("activated()"), self.run)
 
