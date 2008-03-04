@@ -1,21 +1,28 @@
 #!/usr/bin/python
-
 # harrisparser.py
 
+#System Imports
 import sys
-from HarrisGraph import *
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
+#Package Imports
+from HarrisGraph import *
 
 class HarrisParser(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
 
-        self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('HarrisParser')
-
-        self.textEdit = QtGui.QTextEdit()
+        # Set window size, title, icon, statusbar.
+        self.setGeometry(10, 10, 1024, 768,)
+        self.setWindowTitle('Grasssify')
+        self.setWindowIcon(QtGui.QIcon('icon.xpm'))
+        self.statusBar().showMessage('Ready')
+        
+        # Fill the rest of the window with e.g. text input window
+        #self.textEdit = QtGui.QTextEdit()
+        #self.setCentralWidget(self.textEdit)
+        
         
         self.imageLabel = QtGui.QLabel()
         self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
@@ -35,23 +42,29 @@ class HarrisParser(QtGui.QMainWindow):
         
         self.setCentralWidget(scrollArea)
         #self.setCentralWidget(self.textEdit)
-        self.statusBar()
-        self.setFocus()
+        #self.statusBar()
+        #self.setFocus()
 
         opan = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open new File')
         self.connect(opan, QtCore.SIGNAL('triggered()'), self.showDialog)
         
-        exit = QtGui.QAction(QtGui.QIcon('exit.png'), 'Exit', self)
+        exit = QtGui.QAction(QtGui.QIcon('exit.svg'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
         self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
+        # Add MenuBar 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
+        # Add points for file menu
         file.addAction(opan)
         file.addAction(exit)
+        
+        validate = menubar.addMenu('&Validate')
+        # Add points for validate menu
+        #validate.addAction()
         
     def showDialog(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
