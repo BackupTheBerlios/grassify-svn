@@ -18,7 +18,7 @@ class GWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.textEdit)
         
         # Add an file/open menu point
-        # Muss irgendwie als erstes kommen, sonst funzt der Scheiß nicht !!!!
+        # Muss irgendwie als erstes kommen, sonst funzt der Scheiss nicht !!!!
         opan = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open new File')
