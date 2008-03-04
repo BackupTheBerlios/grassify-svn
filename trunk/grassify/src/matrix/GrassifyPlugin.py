@@ -1,5 +1,6 @@
 #from Node import *
-from HarrisGraph import *
+import sys
+from HarrisParser import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
  
@@ -39,54 +40,12 @@ class GrassifyPlugin:
 
     def run(self):
         # create and show a configuration dialog or something similar
-        # print "grassify-import: run called!"
-        self.parse("testmatrix.csv")
+        # print "grassify-import: run called!
+        # app = QApplication(sys.argv)
+        hp = HarrisParser(self.iface.getMainWindow())
+        hp.show()
+        # app.exec_()
 
     def renderTest(self, painter):
         # use painter for drawing to map canvas
         print "grassify-import: renderTest called!"
-    
-    def parse(self, path):
-        fobj = open(path, "r")
-        graph = HarrisGraph()
-        graph.node_attr['shape'] = 'box'
-        # Knoten hinzufuegen
-        for line in fobj:
-            line = line.strip()
-            stratum = line.split(";")
-            if stratum[1] == "context":
-                graph.add_node(stratum[0], stratum[1], stratum[2], stratum[3], stratum[4])
-        # Kanten hinzufuegen
-        fobj.close()
-        fobj = open(path, "r")
-        for line in fobj:
-            line = line.strip()
-            stratum = line.split(";")
-            unitname = stratum[0]
-            later = set(stratum[5].split(", "))
-            if stratum[1] == "context":
-                for node in later:
-                    if node != "":
-                        graph.add_edge(unitname, node, "later")
-                earlier = set(stratum[6].split(", "))
-                for node in earlier:
-                    if node != "":
-                        graph.add_edge(node, unitname, "earlier")
-                equal = set(stratum[7].split(", "))
-#                for node in equal:
-#                    if node != "":
-#                        graph.add_edge(unitname, node, "concurrent")
-#                partof = set(stratum[8].split(", "))
-#                for node in partof:
-#                    if node != "":
-#                        graph.add_edge(unitname, node, "concurrent")            
-        fobj.close()
-        neighbors = graph.neighbors("103")
-        for n in neighbors:
-            print(n)
-        print graph.string() # print to screen
-        graph.write("matrix.dot") # write to simple.dot
-        print "Wrote matrix.dot"
-        graph.layout(prog='dot')
-        graph.draw('matrix.svg') # draw to png 
-        print "Wrote matrix.png"

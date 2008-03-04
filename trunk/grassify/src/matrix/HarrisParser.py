@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# HarrisParser.py
+# harrisparser.py
 
 import sys
 from HarrisGraph import *
@@ -113,7 +113,7 @@ class HarrisParser(QtGui.QMainWindow):
         self.imageLabel.setPixmap(pixmap)
         self.imageLabel.resize(self.imageLabel.pixmap().size())        
 
-app = QtGui.QApplication(sys.argv)
-hp = HarrisParser()
-hp.show()
-app.exec_()
+#app = QtGui.QApplication(sys.argv)
+#hp = HarrisParser()
+#hp.show()
+#app.exec_()
