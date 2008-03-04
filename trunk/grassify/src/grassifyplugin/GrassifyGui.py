@@ -2,6 +2,8 @@ import sys
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
+from HarrisParser import *
+
 
 class GWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -34,13 +36,14 @@ class GWindow(QtGui.QMainWindow):
         # Add MenuBar 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
-        validate = menubar.addMenu('&Validate')
         # Add points for file menu
         file.addAction(opan)
         file.addAction(exit)
         
+        validate = menubar.addMenu('&Validate')
         # Add points for validate menu
         #validate.addAction()
+        
         
         # Add a shortcut toolbar
         self.toolbar = self.addToolBar('Exit')
@@ -49,10 +52,7 @@ class GWindow(QtGui.QMainWindow):
     def showDialog(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
                     '/home')
-        file=open(filename)
-        data = file.read()
-        self.textEdit.setText(data)
-
+        HarrisParser.parse(filename)
       
     # Add small window, asking if you really want to exit
     def closeEvent(self, event):
