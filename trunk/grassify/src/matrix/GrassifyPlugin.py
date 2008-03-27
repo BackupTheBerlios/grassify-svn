@@ -18,20 +18,20 @@ class GrassifyPlugin:
 
     def initGui(self):
         # create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/grassify/icon.xpm"), "grassify plugin", self.iface.getMainWindow())
+        self.action = QAction(QIcon(":/plugins/grassify/icon.xpm"), "stratisfy me", self.iface.getMainWindow())
         self.action.setWhatsThis("Configuration for grassify plugin")
         QObject.connect(self.action, SIGNAL("activated()"), self.run)
 
         # add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginMenu("&grassify plugins", self.action)
+        self.iface.addPluginMenu("&stratisfaction", self.action)
 
         # connect to signal renderComplete which is emitted when canvas rendering is done
         QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.renderTest)
 
     def unload(self):
         # remove the plugin menu item and icon
-        self.iface.removePluginMenu("&grassify plugins",self.action)
+        self.iface.removePluginMenu("&stratisfaction",self.action)
         self.iface.removeToolBarIcon(self.action)
 
         # disconnect form signal of the canvas
@@ -44,6 +44,7 @@ class GrassifyPlugin:
         # app = QApplication(sys.argv)
         hp = HarrisParser(self.iface.getMainWindow())
         hp.show()
+        hp.setMouseTracking(True)
         # app.exec_()
 
     def renderTest(self, painter):

@@ -12,8 +12,8 @@ class HarrisParser(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
 
-        self.setGeometry(300, 300, 350, 300)
-        self.setWindowTitle('HarrisParser')
+        self.setGeometry(300, 300, 355, 352)
+        self.setWindowTitle('Stratisfaction')
 
         self.textEdit = QtGui.QTextEdit()
         
@@ -21,7 +21,8 @@ class HarrisParser(QtGui.QMainWindow):
         self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
         self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored)
         self.imageLabel.setScaledContents(True)
-
+        self.imageLabel.setGeometry(300, 300, 350, 300)
+        
         scrollArea = QtGui.QScrollArea()
         scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
         scrollArea.setWidget(self.imageLabel)
@@ -54,12 +55,15 @@ class HarrisParser(QtGui.QMainWindow):
         file.addAction(exit)
         
     def showDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
-                    '/home')
+        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
         self.parse(filename)
         #file=open(filename)
         #data = file.read()
         #self.textEdit.setText(data)
+        
+    def mouseMoveEvent(self, event):
+        currentPos = QtCore.QPoint(event.pos())
+        self.statusBar().showMessage(str(currentPos.x()) + ", " + str(currentPos.y()))
 
     def parse(self, path):
         fobj = open(path, "r")
@@ -111,7 +115,8 @@ class HarrisParser(QtGui.QMainWindow):
         image = QtGui.QImage(path)
         pixmap = QtGui.QPixmap.fromImage(image)
         self.imageLabel.setPixmap(pixmap)
-        self.imageLabel.resize(self.imageLabel.pixmap().size())        
+        self.imageLabel.resize(self.imageLabel.pixmap().size())    
+        self.resize(self.imageLabel.pixmap().size())  
 
 #app = QtGui.QApplication(sys.argv)
 #hp = HarrisParser()
