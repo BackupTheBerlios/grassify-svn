@@ -1,5 +1,5 @@
 def name():
-    return "grassify plugin"
+    return "stratisfaction plugin"
 
 def description():
     return "archeological stratigraphy in qgis"
