@@ -42,7 +42,7 @@ class GrassifyPlugin:
         # create and show a configuration dialog or something similar
         # print "grassify-import: run called!
         # app = QApplication(sys.argv)
-        hp = HarrisParser(self.iface.getMainWindow())
+        hp = HarrisParser(self.iface, self.iface.getMainWindow())
         hp.show()
         hp.setMouseTracking(True)
         # app.exec_()

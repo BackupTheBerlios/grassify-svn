@@ -4,27 +4,32 @@
 
 import sys
 from HarrisGraph import *
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+
+from qgis.core import *
+from qgis.gui import *
 
 
-class HarrisParser(QtGui.QMainWindow):
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+class HarrisParser(QMainWindow):
+    def __init__(self, iface, parent=None):
+        QMainWindow.__init__(self, parent)
 
+        self.iface = iface
+        
         self.setGeometry(300, 300, 355, 352)
         self.setWindowTitle('Stratisfaction')
 
-        self.textEdit = QtGui.QTextEdit()
+        self.textEdit = QTextEdit()
         
-        self.imageLabel = QtGui.QLabel()
-        self.imageLabel.setBackgroundRole(QtGui.QPalette.Base)
-        self.imageLabel.setSizePolicy(QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored)
+        self.imageLabel = QLabel()
+        self.imageLabel.setBackgroundRole(QPalette.Base)
+        self.imageLabel.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.imageLabel.setScaledContents(True)
         self.imageLabel.setGeometry(300, 300, 350, 300)
         
-        scrollArea = QtGui.QScrollArea()
-        scrollArea.setBackgroundRole(QtGui.QPalette.Dark)
+        scrollArea = QScrollArea()
+        scrollArea.setBackgroundRole(QPalette.Dark)
         scrollArea.setWidget(self.imageLabel)
         
         #grid = QtGui.QGridLayout()
@@ -39,32 +44,43 @@ class HarrisParser(QtGui.QMainWindow):
         self.statusBar()
         self.setFocus()
 
-        opan = QtGui.QAction(QtGui.QIcon('open.png'), 'Open', self)
+        opan = QAction(QIcon('open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open new File')
-        self.connect(opan, QtCore.SIGNAL('triggered()'), self.showDialog)
+        self.connect(opan, SIGNAL('triggered()'), self.showDialog)
         
-        exit = QtGui.QAction(QtGui.QIcon('exit.png'), 'Exit', self)
+        exit = QAction(QIcon('exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
-        self.connect(exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
+        self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
         file.addAction(opan)
         file.addAction(exit)
         
+        self.layer = self.iface.activeLayer()
+        if self.layer.type() == 0:
+            self.connect(self.layer, SIGNAL("selectionChanged()"), self.showSelected)
+            
+        
     def showDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
         self.parse(filename)
         #file=open(filename)
         #data = file.read()
         #self.textEdit.setText(data)
         
-    def mouseMoveEvent(self, event):
-        currentPos = QtCore.QPoint(event.pos())
-        self.statusBar().showMessage(str(currentPos.x()) + ", " + str(currentPos.y()))
+#    def mouseMoveEvent(self, event):
+#        currentPos = QtCore.QPoint(event.pos())
+#        self.statusBar().showMessage(str(currentPos.x()) + ", " + str(currentPos.y()))
 
+    def showSelected(self):
+        layer = self.iface.activeLayer()
+        featureIDs = layer.selectedFeaturesIds()
+        for id in featureIDs:
+            print id 
+    
     def parse(self, path):
         fobj = open(path, "r")
         graph = HarrisGraph()
@@ -112,8 +128,8 @@ class HarrisParser(QtGui.QMainWindow):
         self.draw("matrix.svg")
         
     def draw(self, path):
-        image = QtGui.QImage(path)
-        pixmap = QtGui.QPixmap.fromImage(image)
+        image = QImage(path)
+        pixmap = QPixmap.fromImage(image)
         self.imageLabel.setPixmap(pixmap)
         self.imageLabel.resize(self.imageLabel.pixmap().size())    
         self.resize(self.imageLabel.pixmap().size())  
