@@ -59,8 +59,10 @@ class HarrisParser(QMainWindow):
         file.addAction(opan)
         file.addAction(exit)
         
+        
+        
         self.layer = self.iface.activeLayer()
-        if self.layer.type() == 0:
+        if self.layer.type() == QgsMapLayer.VECTOR:
             self.connect(self.layer, SIGNAL("selectionChanged()"), self.showSelected)
             
         
