@@ -9,15 +9,16 @@ class HarrisGraph(AGraph):
         self.__description = {}
         self.__phase = {}
         self.__location = {}
+        self.__group = {}
     
-    def add_node(self, unitname, unitclass=None, unittype=None, description=None, phase=None, location=None):
+    def add_node(self, unitname, unitclass=None, unittype=None, description=None, phase=None, location=None, group=None):
         AGraph.add_node(self, unitname)
         self.__unitclass[unitname] = unitclass or ""
         self.__unittype[unitname] = unittype or ""
         self.__description[unitname] = description or ""
         self.__phase[unitname] = phase or ""
         self.__location[unitname] = location or [0.0, 0.0]
-        
+        self.__group[unitname] = group or ""
           
 #    def __init__(self, nodes=None):
 #        self.nodes = nodes or {}

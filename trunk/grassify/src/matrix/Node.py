@@ -1,6 +1,6 @@
 class Node:
 
-        def __init__(self, unitname, unitclass, unittype=None, description=None, phase=None, later=None, earlier=None, concurrent=None):
+        def __init__(self, unitname, unitclass, unittype=None, description=None, phase=None, later=None, earlier=None, concurrent=None, group=None):
                 self.__unitname = unitname
                 self.__unitclass = unitclass
                 self.__unittype = unittype or ""
@@ -9,6 +9,7 @@ class Node:
                 self.__later = later or set()
                 self.__earlier = earlier or set()
                 self.__concurrent = concurrent or set()
+                self.__group = group or ""
                 
         def addLater(self, n):
                 self.__later.add(n)
