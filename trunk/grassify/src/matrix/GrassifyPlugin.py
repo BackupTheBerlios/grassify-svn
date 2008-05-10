@@ -17,6 +17,8 @@ class GrassifyPlugin:
         self.nodes = {}
 
     def initGui(self):
+        self.hp = HarrisParser(self.iface, self.iface.getMainWindow())
+        
         # create action that will start plugin configuration
         self.action = QAction(QIcon(":/plugins/grassify/icon.xpm"), "stratisfy me", self.iface.getMainWindow())
         self.action.setWhatsThis("Configuration for grassify plugin")
@@ -28,6 +30,9 @@ class GrassifyPlugin:
 
         # connect to signal renderComplete which is emitted when canvas rendering is done
         QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.renderTest)
+        
+        # connect to signal selectionChanged which is emitted when selection on current layer changes
+        QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.hp.showSelected)
 
     def unload(self):
         # remove the plugin menu item and icon
@@ -42,9 +47,8 @@ class GrassifyPlugin:
         # create and show a configuration dialog or something similar
         # print "grassify-import: run called!
         # app = QApplication(sys.argv)
-        hp = HarrisParser(self.iface, self.iface.getMainWindow())
-        hp.show()
-        hp.setMouseTracking(True)
+        self.hp.show()
+        self.hp.setMouseTracking(True)
         # app.exec_()
 
     def renderTest(self, painter):

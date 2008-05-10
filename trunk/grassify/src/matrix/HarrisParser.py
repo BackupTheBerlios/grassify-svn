@@ -59,12 +59,12 @@ class HarrisParser(QMainWindow):
         file.addAction(opan)
         file.addAction(exit)
         
+        #self.makeConnections()
         
-        
-        self.layer = self.iface.activeLayer()
-        if self.layer.type() == QgsMapLayer.VECTOR:
-            self.connect(self.layer, SIGNAL("selectionChanged()"), self.showSelected)
-            
+    #def makeConnections(self):
+        #self.layer = self.iface.activeLayer()
+        #print type(self.layer)
+        #print(self.connect(self.iface, SIGNAL("currentLayerChanged (QgsMapLayer *layer)"), self.showSelected))    
         
     def showDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
@@ -79,9 +79,12 @@ class HarrisParser(QMainWindow):
 
     def showSelected(self):
         layer = self.iface.activeLayer()
-        featureIDs = layer.selectedFeaturesIds()
-        for id in featureIDs:
-            print id 
+        print type(layer)
+        if isinstance(layer, QgsVectorLayer):
+        #if layer.type() == QgsMapLayer.VECTOR:
+            featureIDs = layer.selectedFeaturesIds()
+            for id in featureIDs:
+                print id 
     
     def parse(self, path):
         fobj = open(path, "r")
