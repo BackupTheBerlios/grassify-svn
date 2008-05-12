@@ -28,18 +28,18 @@ class HarrisParser(QMainWindow):
         self.imageLabel.setScaledContents(True)
         self.imageLabel.setGeometry(300, 300, 350, 300)
         
-        scrollArea = QScrollArea()
-        scrollArea.setBackgroundRole(QPalette.Dark)
-        scrollArea.setWidget(self.imageLabel)
+        self.scrollArea = QScrollArea()
+        self.scrollArea.setBackgroundRole(QPalette.Dark)
+        self.scrollArea.setWidget(self.imageLabel)
         
         #grid = QtGui.QGridLayout()
         #grid.setSpacing(10)
-        #grid.addWidget(scrollArea, 1, 0)
+        #grid.addWidget(self.scrollArea, 1, 0)
         #grid.addWidget(self.textEdit, 2, 0)
         
         #self.setLayout(grid)
         
-        self.setCentralWidget(scrollArea)
+        self.setCentralWidget(self.scrollArea)
         #self.setCentralWidget(self.textEdit)
         self.statusBar()
         self.setFocus()
@@ -83,8 +83,10 @@ class HarrisParser(QMainWindow):
         if isinstance(layer, QgsVectorLayer):
         #if layer.type() == QgsMapLayer.VECTOR:
             featureIDs = layer.selectedFeaturesIds()
+            ids = ""
             for id in featureIDs:
-                print id 
+                ids = ids + ", " + str(id)
+            self.imageLabel.setText("Gewaehlte Features: \n \n" + ids)
     
     def parse(self, path):
         fobj = open(path, "r")
