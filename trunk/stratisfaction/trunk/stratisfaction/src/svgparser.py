@@ -36,7 +36,7 @@ def printMoped(sukamare):
     for key in sukamare:
         print sukamare[key][0][0]
 
-def main():
-    lade_svg("matrix.svg")
-    
-main()
+#def main():
+#    lade_svg("matrix.svg")
+#    
+#main()

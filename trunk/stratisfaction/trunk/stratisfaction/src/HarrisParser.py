@@ -5,8 +5,10 @@
 import sys
 import svgparser
 from HarrisGraph import *
+from HarrisScene import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from PyQt4.QtSvg import *
 
 from qgis.core import *
 from qgis.gui import *
@@ -16,32 +18,19 @@ class HarrisParser(QMainWindow):
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
 
+        self.svg_tree = {}
         self.iface = iface
         
         self.setGeometry(300, 300, 355, 352)
         self.setWindowTitle('Stratisfaction')
 
-        self.textEdit = QTextEdit()
         
-        self.imageLabel = QLabel()
-        self.imageLabel.setBackgroundRole(QPalette.Base)
-        self.imageLabel.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.imageLabel.setScaledContents(True)
-        self.imageLabel.setGeometry(300, 300, 350, 300)
+        self.scene = HarrisScene()
+        self.view = QGraphicsView(self.scene)
         
-        self.scrollArea = QScrollArea()
-        self.scrollArea.setBackgroundRole(QPalette.Dark)
-        self.scrollArea.setWidget(self.imageLabel)
+        self.view.show()
         
-        #grid = QtGui.QGridLayout()
-        #grid.setSpacing(10)
-        #grid.addWidget(self.scrollArea, 1, 0)
-        #grid.addWidget(self.textEdit, 2, 0)
-        
-        #self.setLayout(grid)
-        
-        self.setCentralWidget(self.scrollArea)
-        #self.setCentralWidget(self.textEdit)
+        self.setCentralWidget(self.view)
         self.statusBar()
         self.setFocus()
 
@@ -60,27 +49,11 @@ class HarrisParser(QMainWindow):
         file.addAction(opan)
         file.addAction(exit)
         
-        #self.makeConnections()
-        
-    #def makeConnections(self):
-        #self.layer = self.iface.activeLayer()
-        #print type(self.layer)
-        #print(self.connect(self.iface, SIGNAL("currentLayerChanged (QgsMapLayer *layer)"), self.showSelected))    
-        
     def showDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
         self.parse(filename)
         self.draw("matrix.svg")
-        svg_tree = svgparser.lade_svg("matrix.svg")
-        
-    def mousePressEvent(self, event):
-        if event.button()== Qt.LeftButton:
-            return QPoint(event.pos())
-            #print "Schalke ist der geilste Klup der Welt"
-        
-    
-        
-        
+        self.svg_tree = svgparser.lade_svg("matrix.svg")
         ########################################################################
         # 
         #  svg_tree enthaelt die koordinaten der rechtecke.
@@ -97,10 +70,6 @@ class HarrisParser(QMainWindow):
         #data = file.read()
         #self.textEdit.setText(data)
         
-    def mouseMoveEvent(self, event):
-        currentPos = QPoint(event.pos())
-        self.statusBar().showMessage(str(currentPos.x() - 6) + ", " + str(currentPos.y() - 790))
-
     def showSelected(self):
         layer = self.iface.activeLayer()
         print type(layer)
@@ -122,7 +91,8 @@ class HarrisParser(QMainWindow):
             line = line.strip()
             stratum = line.split(";")
             if stratum[1] == "context":
-                graph.add_node(stratum[0], stratum[1], stratum[2], stratum[3], stratum[4])
+                graph.add_node(stratum[0], stratum[1])
+                #graph.add_node(stratum[0], stratum[1], stratum[2], stratum[3], stratum[4])
 #            if stratum[1] == "group":
 #                groups[stratum[0]] = set()              
         # Kanten hinzufuegen, Knoten zu Gruppen zuordnen
@@ -133,12 +103,12 @@ class HarrisParser(QMainWindow):
             line = line.strip()
             stratum = line.split(";")
             unitname = stratum[0]
-            later = set(stratum[5].split(", "))
+            later = set(stratum[2].split(", "))
             if stratum[1] == "context":
                 for node in later:
                     if node != "":
                         graph.add_edge(unitname, node, "later")
-                earlier = set(stratum[6].split(", "))
+                earlier = set(stratum[3].split(", "))
                 for node in earlier:
                     if node != "":
                         graph.add_edge(node, unitname, "earlier")
@@ -167,12 +137,9 @@ class HarrisParser(QMainWindow):
         graph.draw('matrix.svg') # draw to png 
         print "Wrote matrix.png"
         
-    def draw(self, path):
-        image = QImage(path)
-        pixmap = QPixmap.fromImage(image)
-        self.imageLabel.setPixmap(pixmap)
-        self.imageLabel.resize(self.imageLabel.pixmap().size())    
-        self.resize(self.imageLabel.pixmap().size())  
+    def draw(self, path): 
+        item = QGraphicsSvgItem(path)
+        self.scene.addItem(item)
 
 #app = QtGui.QApplication(sys.argv)
 #hp = HarrisParser()
