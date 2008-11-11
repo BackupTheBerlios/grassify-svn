@@ -27,14 +27,22 @@ def lade_svg(dateiname):
                     for koordinaten in werte:
                         koordinate = koordinaten.rsplit(" ")        
                         [x,y] = koordinate[0].rsplit(",")                        
-                        punkte.append([x,y])
+                        if x.find(".") > -1:
+                            [vorkommax,nachkommax] = x.rsplit(".")
+                        else:
+                            vorkommax = x
+                        if y.find(".") > -1:
+                            [vorkommay,nachkommay] = y.rsplit(".")
+                        else:
+                            vorkommay = y
+                        punkte.append([vorkommax,vorkommay])
             d[schluessel] = punkte
-    printMoped(d)
+    #printMoped(d)
     return d
     
 def printMoped(sukamare):
     for key in sukamare:
-        print sukamare[key][0][0]
+        print key + ": " + sukamare[key][2][1]
 
 #def main():
 #    lade_svg("matrix.svg")

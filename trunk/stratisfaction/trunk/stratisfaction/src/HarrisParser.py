@@ -54,21 +54,7 @@ class HarrisParser(QMainWindow):
         self.parse(filename)
         self.draw("matrix.svg")
         self.svg_tree = svgparser.lade_svg("matrix.svg")
-        ########################################################################
-        # 
-        #  svg_tree enthaelt die koordinaten der rechtecke.
-        #  svg_tree[id][koordinate][x|y]
-        #  also svg_tree[1][3][y] liefert euch die y-koordinate des 3. Punktes
-        #  von polygon 1 
-        #
-        #  jetzt also per mouseclickevent die aktuelle koordinate auslesen und
-        #  ueberpruefen ob die in einem der rechtecke liegt. haut rein!
-        #
-        ########################################################################
-        svgparser.printMoped(svg_tree)
-        #file=open(filename)
-        #data = file.read()
-        #self.textEdit.setText(data)
+        self.scene.setSvg_tree(self.svg_tree)
         
     def showSelected(self):
         layer = self.iface.activeLayer()
@@ -130,7 +116,7 @@ class HarrisParser(QMainWindow):
 #        neighbors = graph.neighbors("103")
 #        for n in neighbors:
 #            print(n)
-        print graph.string() # print to screen
+        #print graph.string() # print to screen
         graph.write("matrix.dot") # write to simple.dot
         print "Wrote matrix.dot"
         graph.layout(prog='dot')
@@ -140,6 +126,7 @@ class HarrisParser(QMainWindow):
     def draw(self, path): 
         item = QGraphicsSvgItem(path)
         self.scene.addItem(item)
+        #print "hoehe: " + str(self.scene.height())
 
 #app = QtGui.QApplication(sys.argv)
 #hp = HarrisParser()
