@@ -5,5 +5,6 @@
         <file>document-new.png</file>
         <file>document-open.png</file>
         <file>document-save.png</file>
+        <file>stratisfaction_icon.xpm</file>
     </qresource>
 </RCC>

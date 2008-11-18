@@ -20,7 +20,7 @@ class GrassifyPlugin:
         self.hp = HarrisParser(self.iface, self.iface.getMainWindow())
         
         # create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/grassify/icon.xpm"), "stratisfy me", self.iface.getMainWindow())
+        self.action = QAction(QIcon(":stratisfaction_icon.xpm"), "stratisfy me", self.iface.getMainWindow())
         self.action.setWhatsThis("Configuration for grassify plugin")
         QObject.connect(self.action, SIGNAL("activated()"), self.run)
 
