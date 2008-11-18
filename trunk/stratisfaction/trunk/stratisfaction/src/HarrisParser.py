@@ -38,27 +38,27 @@ class HarrisParser(QMainWindow):
         self.statusBar()
         self.setFocus()
         
-        new = QAction(QIcon('new.png'), 'New', self)
+        new = QAction(QIcon('document-new.png'), 'New', self)
         new.setShortcut('Ctrl+N')
         new.setStatusTip('Create new Project')
         self.connect(new, SIGNAL('triggered()'), self.showNewDialog)
 
-        opan = QAction(QIcon('open.png'), 'Open', self)
+        opan = QAction(QIcon('document-open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open Project File')
         #self.connect(opan, SIGNAL('triggered()'), self.showDialog)
         
-        impert = QAction(QIcon('import.png'), 'Import Stratify Data', self)
+        impert = QAction(QIcon('document-import.png'), 'Import Stratify Data', self)
         impert.setShortcut('Ctrl+I')
         impert.setStatusTip('Import Data from Stratify')
         self.connect(impert, SIGNAL('triggered()'), self.showImportDialog)
         
-        save = QAction(QIcon('save.png'), 'Save', self)
+        save = QAction(QIcon('document-save.png'), 'Save', self)
         save.setShortcut('Ctrl+S')
         save.setStatusTip('Save Project')
         #self.connect(save, SIGNAL('triggered()'), self.showDialog)
         
-        exit = QAction(QIcon('exit.png'), 'Exit', self)
+        exit = QAction(QIcon('application-exit.svg'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
         self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
@@ -69,6 +69,10 @@ class HarrisParser(QMainWindow):
         file.addAction(opan)
         file.addAction(impert)
         file.addAction(exit)
+        
+         # Add a shortcut toolbar
+        self.toolbar = self.addToolBar('Exit')
+        self.toolbar.addAction(exit)
         
     def showImportDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
