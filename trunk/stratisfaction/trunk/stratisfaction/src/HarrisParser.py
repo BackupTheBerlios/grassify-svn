@@ -65,6 +65,7 @@ class HarrisParser(QMainWindow):
         self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
 
         # ein versuch die layer ids per knopfdruck anzuzeigen
+        showId = QAction(self)
         self.connect(showId, SIGNAL('triggered()'), self.getLayerId)
 
         menubar = self.menuBar()
