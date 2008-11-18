@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/" >
-        <file>icon.xpm</file>
+        <file>application-exit.png</file>
+        <file>document-import.png</file>
+        <file>document-new.png</file>
+        <file>document-open.png</file>
+        <file>document-save.png</file>
     </qresource>
 </RCC>

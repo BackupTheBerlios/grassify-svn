@@ -21,6 +21,7 @@ class HarrisParser(QMainWindow):
         QMainWindow.__init__(self, parent)
 
         self.projname = "Harris"
+        self.path = ""
         
         self.svg_tree = {}
         self.iface = iface
@@ -38,27 +39,27 @@ class HarrisParser(QMainWindow):
         self.statusBar()
         self.setFocus()
         
-        new = QAction(QIcon('document-new.png'), 'New', self)
+        new = QAction(QIcon(':document-new.png'), 'New', self)
         new.setShortcut('Ctrl+N')
         new.setStatusTip('Create new Project')
         self.connect(new, SIGNAL('triggered()'), self.showNewDialog)
 
-        opan = QAction(QIcon('document-open.png'), 'Open', self)
+        opan = QAction(QIcon(':document-open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open Project File')
         #self.connect(opan, SIGNAL('triggered()'), self.showDialog)
         
-        impert = QAction(QIcon('document-import.png'), 'Import Stratify Data', self)
+        impert = QAction(QIcon(':document-import.png'), 'Import Stratify Data', self)
         impert.setShortcut('Ctrl+I')
         impert.setStatusTip('Import Data from Stratify')
         self.connect(impert, SIGNAL('triggered()'), self.showImportDialog)
         
-        save = QAction(QIcon('document-save.png'), 'Save', self)
+        save = QAction(QIcon(':document-save.png'), 'Save', self)
         save.setShortcut('Ctrl+S')
         save.setStatusTip('Save Project')
         #self.connect(save, SIGNAL('triggered()'), self.showDialog)
         
-        exit = QAction(QIcon('application-exit.svg'), 'Exit', self)
+        exit = QAction(QIcon(':application-exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
         self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
