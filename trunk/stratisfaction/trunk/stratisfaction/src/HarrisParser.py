@@ -64,6 +64,9 @@ class HarrisParser(QMainWindow):
         exit.setStatusTip('Exit application')
         self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
 
+        # ein versuch die layer ids per knopfdruck anzuzeigen
+        self.connect(showId, SIGNAL('triggered()'), self.getLayerId)
+
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
         file.addAction(new)
@@ -72,9 +75,21 @@ class HarrisParser(QMainWindow):
         file.addAction(exit)
         
          # Add a shortcut toolbar
-        self.toolbar = self.addToolBar('Exit')
+        self.toolbar = self.addToolBar('Tooli')
+        self.toolbar.addAction(new)
+        self.toolbar.addAction(opan)
+        self.toolbar.addAction(save)
+        self.toolbar.addAction(impert)
         self.toolbar.addAction(exit)
         
+        self.toolbar = self.addToolBar('Tuwas')
+        self.toolbar.addAction(showId)
+        
+        
+    def getLayerId(self):
+        eidi = iface.QgisInterface.QgsMapLayer.QgsVectorLayer.selectedFeaturesIds
+        print eidi
+    
     def showImportDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
         self.parse(filename)
