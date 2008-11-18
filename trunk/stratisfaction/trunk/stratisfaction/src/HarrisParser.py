@@ -13,11 +13,15 @@ from PyQt4.QtSvg import *
 from qgis.core import *
 from qgis.gui import *
 
+import os
+
 
 class HarrisParser(QMainWindow):
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
 
+        self.projname = "Harris"
+        
         self.svg_tree = {}
         self.iface = iface
         
@@ -37,22 +41,22 @@ class HarrisParser(QMainWindow):
         new = QAction(QIcon('new.png'), 'New', self)
         new.setShortcut('Ctrl+N')
         new.setStatusTip('Create new Project')
-        self.connect(new, SIGNAL('triggered()'), self.showDialog)
+        self.connect(new, SIGNAL('triggered()'), self.showNewDialog)
 
         opan = QAction(QIcon('open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open Project File')
-        self.connect(opan, SIGNAL('triggered()'), self.showDialog)
+        #self.connect(opan, SIGNAL('triggered()'), self.showDialog)
         
         impert = QAction(QIcon('import.png'), 'Import Stratify Data', self)
         impert.setShortcut('Ctrl+I')
         impert.setStatusTip('Import Data from Stratify')
-        self.connect(impert, SIGNAL('triggered()'), self.showDialog)
+        self.connect(impert, SIGNAL('triggered()'), self.showImportDialog)
         
         save = QAction(QIcon('save.png'), 'Save', self)
         save.setShortcut('Ctrl+S')
         save.setStatusTip('Save Project')
-        self.connect(save, SIGNAL('triggered()'), self.showDialog)
+        #self.connect(save, SIGNAL('triggered()'), self.showDialog)
         
         exit = QAction(QIcon('exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
@@ -66,12 +70,22 @@ class HarrisParser(QMainWindow):
         file.addAction(impert)
         file.addAction(exit)
         
-    def showDialog(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home')
+    def showImportDialog(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
         self.parse(filename)
         self.draw("matrix.svg")
         self.svg_tree = svgparser.lade_svg("matrix.svg")
         self.scene.setSvg_tree(self.svg_tree)
+        
+    def showNewDialog(self):
+        dialog = QFileDialog()
+        dialog.setDefaultSuffix("spf")
+        filename = str(dialog.getSaveFileName(self, 'Set Project File', '/home', 'Stratisfaction Project File (*.spf)'))
+        print filename
+        puzzle = filename.rsplit("/", 1)
+        os.chdir(puzzle[0])
+        self.projname = puzzle[1]
+        
         
     def showSelected(self):
         layer = self.iface.activeLayer()
@@ -134,10 +148,10 @@ class HarrisParser(QMainWindow):
 #        for n in neighbors:
 #            print(n)
         #print graph.string() # print to screen
-        graph.write("matrix.dot") # write to simple.dot
+        graph.write(self.projname + ".dot") # write to simple.dot
         print "Wrote matrix.dot"
         graph.layout(prog='dot')
-        graph.draw('matrix.svg') # draw to png 
+        graph.draw(self.projname + '.svg') # draw to png 
         print "Wrote matrix.png"
         
     def draw(self, path): 
