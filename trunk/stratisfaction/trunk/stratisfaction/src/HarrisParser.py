@@ -33,11 +33,26 @@ class HarrisParser(QMainWindow):
         self.setCentralWidget(self.view)
         self.statusBar()
         self.setFocus()
+        
+        new = QAction(QIcon('new.png'), 'New', self)
+        new.setShortcut('Ctrl+N')
+        new.setStatusTip('Create new Project')
+        self.connect(new, SIGNAL('triggered()'), self.showDialog)
 
         opan = QAction(QIcon('open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
-        opan.setStatusTip('Open new File')
+        opan.setStatusTip('Open Project File')
         self.connect(opan, SIGNAL('triggered()'), self.showDialog)
+        
+        impert = QAction(QIcon('import.png'), 'Import Stratify Data', self)
+        impert.setShortcut('Ctrl+I')
+        impert.setStatusTip('Import Data from Stratify')
+        self.connect(impert, SIGNAL('triggered()'), self.showDialog)
+        
+        save = QAction(QIcon('save.png'), 'Save', self)
+        save.setShortcut('Ctrl+S')
+        save.setStatusTip('Save Project')
+        self.connect(save, SIGNAL('triggered()'), self.showDialog)
         
         exit = QAction(QIcon('exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
@@ -46,7 +61,9 @@ class HarrisParser(QMainWindow):
 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
+        file.addAction(new)
         file.addAction(opan)
+        file.addAction(impert)
         file.addAction(exit)
         
     def showDialog(self):
