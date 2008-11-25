@@ -32,7 +32,7 @@ class GrassifyPlugin:
         QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.renderTest)
         
         # connect to signal selectionChanged which is emitted when selection on current layer changes
-        QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.hp.showSelected)
+#        QObject.connect(self.iface.getMapCanvas(), SIGNAL("renderComplete(QPainter *)"), self.hp.showSelected)
 
     def unload(self):
         # remove the plugin menu item and icon

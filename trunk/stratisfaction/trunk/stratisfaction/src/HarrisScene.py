@@ -5,14 +5,20 @@ from PyQt4.QtCore import *
 
 
 class HarrisScene(QGraphicsScene):
-    def __init__(self):
+    def __init__(self, parser):
         QGraphicsScene.__init__(self)
+        self.hp = parser
         self.svg_tree = {}
+        
         
     def mousePressEvent(self, event):
         currentPos = QPointF(event.scenePos())
         #print str(currentPos.x()) + ", " + str(currentPos.y() - self.height())
-        print self.pointIn([currentPos.x(),currentPos.y() - self.height()])
+        node = self.pointIn([currentPos.x(),currentPos.y() - self.height()])
+        print node
+        if self.hp.mode == "edit":
+            self.hp.selected = node
+            print "jetzt auswaehlen, jetzt, jetzt!"
     
     def setSvg_tree(self, tree):
         self.svg_tree = tree    

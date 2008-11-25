@@ -22,6 +22,9 @@ class HarrisParser(QMainWindow):
 
         self.projname = "Harris"
         self.path = ""
+        self.selected = "none"
+        
+        self.mode = "interact"
         
         self.svg_tree = {}
         self.iface = iface
@@ -30,7 +33,7 @@ class HarrisParser(QMainWindow):
         self.setWindowTitle('Stratisfaction')
 
         
-        self.scene = HarrisScene()
+        self.scene = HarrisScene(self)
         self.view = QGraphicsView(self.scene)
         
         self.view.show()
@@ -63,10 +66,15 @@ class HarrisParser(QMainWindow):
         exit.setShortcut('Ctrl+Q')
         exit.setStatusTip('Exit application')
         self.connect(exit, SIGNAL('triggered()'), SLOT('close()'))
+        
+        switch = QAction(QIcon(':edit.png'), 'Switch mode', self)
+        switch.setShortcut('Ctrl+E')
+        switch.setStatusTip('Switch to Editmode')
+        self.connect(switch, SIGNAL('triggered()'), self.edit)
 
-        # ein versuch die layer ids per knopfdruck anzuzeigen
-        showId = QAction(self)
-        self.connect(showId, SIGNAL('triggered()'), self.getLayerId)
+# ein versuch die layer ids per knopfdruck anzuzeigen
+#        showId = QAction(self)
+#        self.connect(showId, SIGNAL('triggered()'), self.getLayerId)
 
         menubar = self.menuBar()
         file = menubar.addMenu('&File')
@@ -74,6 +82,9 @@ class HarrisParser(QMainWindow):
         file.addAction(opan)
         file.addAction(impert)
         file.addAction(exit)
+        
+        edit = menubar.addMenu('&Edit')
+        edit.addAction(switch)
         
          # Add a shortcut toolbar
         self.toolbar = self.addToolBar('Tooli')
@@ -83,13 +94,12 @@ class HarrisParser(QMainWindow):
         self.toolbar.addAction(impert)
         self.toolbar.addAction(exit)
         
-        self.toolbar = self.addToolBar('Tuwas')
-        self.toolbar.addAction(showId)
-        
-        
-    def getLayerId(self):
-        eidi = iface.QgisInterface.QgsMapLayer.QgsVectorLayer.selectedFeaturesIds
-        print eidi
+#        self.toolbar2 = self.addToolBar('Tuwas')
+#        self.toolbar2.addAction(showId)
+
+#    def getLayerId(self):
+#        eidi = iface.QgisInterface.QgsMapLayer.QgsVectorLayer.selectedFeaturesIds
+#        print eidi
     
     def showImportDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
@@ -109,16 +119,16 @@ class HarrisParser(QMainWindow):
         print self.projname
         
         
-    def showSelected(self):
-        layer = self.iface.activeLayer()
-        print type(layer)
-        if isinstance(layer, QgsVectorLayer):
-        #if layer.type() == QgsMapLayer.VECTOR:
-            featureIDs = layer.selectedFeaturesIds()
-            ids = ""
-            for id in featureIDs:
-                ids = ids + ", " + str(id)
-            self.imageLabel.setText("Gewaehlte Features: \n \n" + ids)
+#    def showSelected(self):
+#        layer = self.iface.activeLayer()
+#        print type(layer)
+#        if isinstance(layer, QgsVectorLayer):
+#        #if layer.type() == QgsMapLayer.VECTOR:
+#            featureIDs = layer.selectedFeaturesIds()
+#            ids = ""
+#            for id in featureIDs:
+#                ids = ids + ", " + str(id)
+#            self.imageLabel.setText("Gewaehlte Features: \n \n" + ids)
     
     def parse(self, path):
         fobj = open(path, "r")
@@ -180,6 +190,31 @@ class HarrisParser(QMainWindow):
         item = QGraphicsSvgItem(path)
         self.scene.addItem(item)
         #print "hoehe: " + str(self.scene.height())
+        
+    def edit(self):
+        if self.mode == "interact":
+            self.mode = "edit"
+            self.button = QPushButton("zuweisen", self)
+            self.connect(self.button, SIGNAL('clicked()'), self.makeConnections)
+            self.statusBar().addWidget(self.button)
+            self.button.show()
+            print self.mode + " mode activatet"
+        else:
+            self.mode = "interact"
+            self.statusBar().removeWidget(self.button)
+            print self.mode + "ion mode activatet"
+            
+    def makeConnections(self):
+        if self.selected != "none":
+            print str(self.getSelectedFeaturesIds())
+        else:
+            print "keine Node ausgewaehlt!"
+            
+    def getSelectedFeaturesIds(self):
+        if self.iface.activeLayer().type() == 0:
+            if int(self.iface.activeLayer().selectedFeatureCount()) >= 1:
+                ids = self.iface.activeLayer().selectedFeaturesIds()
+        return ids
 
 #app = QtGui.QApplication(sys.argv)
 #hp = HarrisParser()
