@@ -94,8 +94,8 @@ class HarrisParser(QMainWindow):
     def showImportDialog(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
         self.parse(filename)
-        self.draw("matrix.svg")
-        self.svg_tree = svgparser.lade_svg("matrix.svg")
+        self.draw(self.projname + ".svg")
+        self.svg_tree = svgparser.lade_svg(self.projname + ".svg")
         self.scene.setSvg_tree(self.svg_tree)
         
     def showNewDialog(self):
@@ -106,6 +106,7 @@ class HarrisParser(QMainWindow):
         puzzle = filename.rsplit("/", 1)
         os.chdir(puzzle[0])
         self.projname = puzzle[1]
+        print self.projname
         
         
     def showSelected(self):
