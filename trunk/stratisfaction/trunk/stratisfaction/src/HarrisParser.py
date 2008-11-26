@@ -24,6 +24,8 @@ class HarrisParser(QMainWindow):
         self.path = ""
         self.selected = "none"
         
+        self.connections = set()
+        
         self.mode = "interact"
         
         self.svg_tree = {}
@@ -206,7 +208,10 @@ class HarrisParser(QMainWindow):
             
     def makeConnections(self):
         if self.selected != "none":
-            print str(self.getSelectedFeaturesIds())
+            featuresIds = self.getSelectedFeaturesIds()
+            for id in featuresIds:
+                self.connections.add((self.selected, id))
+                print self.connections            
         else:
             print "keine Node ausgewaehlt!"
             

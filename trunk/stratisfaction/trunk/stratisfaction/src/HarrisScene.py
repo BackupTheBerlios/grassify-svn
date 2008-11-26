@@ -16,9 +16,20 @@ class HarrisScene(QGraphicsScene):
         #print str(currentPos.x()) + ", " + str(currentPos.y() - self.height())
         node = self.pointIn([currentPos.x(),currentPos.y() - self.height()])
         print node
-        if self.hp.mode == "edit":
-            self.hp.selected = node
+        self.hp.selected = node
+        if self.hp.mode == "edit":            
             print "jetzt auswaehlen, jetzt, jetzt!"
+        else:
+        	if node != "none":
+        		ids = set()
+        		for tupel in self.hp.connections:
+        			if tupel[0] == node:
+        				ids.add(tupel[1])
+        		self.hp.iface.activeLayer().removeSelection()
+        		for id in ids:
+        			self.hp.iface.activeLayer().select(id)
+        			
+        	
     
     def setSvg_tree(self, tree):
         self.svg_tree = tree    
