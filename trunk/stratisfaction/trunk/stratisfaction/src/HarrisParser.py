@@ -3,6 +3,7 @@
 # harrisparser.py
 
 import sys
+import os
 import svgparser
 from HarrisGraph import *
 from HarrisScene import *
@@ -13,15 +14,13 @@ from PyQt4.QtSvg import *
 from qgis.core import *
 from qgis.gui import *
 
-import os
-
 
 class HarrisParser(QMainWindow):
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
 
         self.projname = "Harris"
-        self.path = ""
+        self.path = os.environ['HOME']
         
         self.connections = set()
         
@@ -43,6 +42,8 @@ class HarrisParser(QMainWindow):
         self.statusBar()
         self.setFocus()
         
+        os.chdir(self.path)
+                
         new = QAction(QIcon(':document-new.png'), 'New', self)
         new.setShortcut('Ctrl+N')
         new.setStatusTip('Create new Project')
@@ -61,7 +62,7 @@ class HarrisParser(QMainWindow):
         save = QAction(QIcon(':document-save.png'), 'Save', self)
         save.setShortcut('Ctrl+S')
         save.setStatusTip('Save Project')
-        #self.connect(save, SIGNAL('triggered()'), self.showDialog)
+        self.connect(save, SIGNAL('triggered()'), self.save)
         
         exit = QAction(QIcon(':application-exit.png'), 'Exit', self)
         exit.setShortcut('Ctrl+Q')
@@ -81,6 +82,7 @@ class HarrisParser(QMainWindow):
         file = menubar.addMenu('&File')
         file.addAction(new)
         file.addAction(opan)
+        file.addAction(save)
         file.addAction(impert)
         file.addAction(exit)
         
@@ -118,6 +120,13 @@ class HarrisParser(QMainWindow):
         os.chdir(puzzle[0])
         self.projname = puzzle[1]
         print self.projname
+        
+    def save(self):
+        fobj = open(self.projname + ".spf", "w") 
+        fobj.write("layer_path=" + self.iface.activeLayer().source() + "\n") 
+        for connection in self.connections: 
+            fobj.write("connection=" + str(connection[0]) + "-" + str(connection[1]) + "\n") 
+        fobj.close()
         
         
 #    def showSelected(self):
