@@ -9,27 +9,61 @@ class HarrisScene(QGraphicsScene):
         QGraphicsScene.__init__(self)
         self.hp = parser
         self.svg_tree = {}
-        
+        self.selected = {}
         
     def mousePressEvent(self, event):
         currentPos = QPointF(event.scenePos())
-        #print str(currentPos.x()) + ", " + str(currentPos.y() - self.height())
         node = self.pointIn([currentPos.x(),currentPos.y() - self.height()])
         print node
-        self.hp.selected = node
+        if node != "none":
+            self.toggleSelectNode(node)
         if self.hp.mode == "edit":            
             print "jetzt auswaehlen, jetzt, jetzt!"
         else:
-        	if node != "none":
-        		ids = set()
-        		for tupel in self.hp.connections:
-        			if tupel[0] == node:
-        				ids.add(tupel[1])
-        		self.hp.iface.activeLayer().removeSelection()
-        		for id in ids:
-        			self.hp.iface.activeLayer().select(id)
-        			
-        	
+            if node != "none":
+                #print self.selected
+                if node in self.selected:        		
+                    ids = set()
+                    for tupel in self.hp.connections:
+                        if tupel[0] == node:
+                            ids.add(tupel[1])
+                    if self.hp.iface.activeLayer() != None:
+                        for id in ids:
+                            self.hp.iface.activeLayer().select(id)
+                else:
+                    ids = set()
+                    for node in self.selected:
+                        for tupel in self.hp.connections:
+                            if tupel[0] == node:
+                                ids.add(tupel[1])
+                    if self.hp.iface.activeLayer() != None:
+                        self.hp.iface.activeLayer().removeSelection()
+                        for id in ids:
+                            self.hp.iface.activeLayer().select(id)  
+            else:
+                pass 
+        			    	
+    def toggleSelectNode(self, node):
+        if node != "none":
+            if node not in self.selected:
+                min_x = min(float(self.svg_tree[node][0][0]), float(self.svg_tree[node][1][0]), float(self.svg_tree[node][2][0]))
+                max_x = max(float(self.svg_tree[node][0][0]), float(self.svg_tree[node][1][0]), float(self.svg_tree[node][2][0]))
+                min_y = min(float(self.svg_tree[node][0][1]), float(self.svg_tree[node][1][1]), float(self.svg_tree[node][2][1]))
+                max_y = max(float(self.svg_tree[node][0][1]), float(self.svg_tree[node][1][1]), float(self.svg_tree[node][2][1]))
+                width = max_x - min_x
+                height = max_y - min_y
+                item = QGraphicsRectItem(min_x + 4, min_y + self.height() - 5, width, height)
+                item.setBrush(QBrush(QColor(255,255,0,64)))
+                self.addItem(item)
+                self.selected[node] = item
+            else:
+                self.removeItem(self.selected[node])
+                del self.selected[node]            
+    
+    def removeSelection(self):
+        for node in self.selected:
+            self.removeItem(self.selected[node])
+        self.selected = {}
     
     def setSvg_tree(self, tree):
         self.svg_tree = tree    

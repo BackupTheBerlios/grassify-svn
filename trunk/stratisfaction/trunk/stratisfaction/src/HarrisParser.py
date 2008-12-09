@@ -22,7 +22,6 @@ class HarrisParser(QMainWindow):
 
         self.projname = "Harris"
         self.path = ""
-        self.selected = "none"
         
         self.connections = set()
         
@@ -194,6 +193,8 @@ class HarrisParser(QMainWindow):
         #print "hoehe: " + str(self.scene.height())
         
     def edit(self):
+        self.scene.removeSelection()
+        self.iface.activeLayer().removeSelection()
         if self.mode == "interact":
             self.mode = "edit"
             self.button = QPushButton("zuweisen", self)
@@ -207,13 +208,20 @@ class HarrisParser(QMainWindow):
             print self.mode + "ion mode activatet"
             
     def makeConnections(self):
-        if self.selected != "none":
-            featuresIds = self.getSelectedFeaturesIds()
-            for id in featuresIds:
-                self.connections.add((self.selected, id))
-                print self.connections            
+        if self.scene.selected != set([]):
+            for node in self.scene.selected:
+                featuresIds = self.getSelectedFeaturesIds()
+                for id in featuresIds:
+                    self.connections.add((node, id))
+            print self.connections            
         else:
             print "keine Node ausgewaehlt!"
+            
+    def toggleSelected(self, node):
+        if node in self.scene.selected:
+            self.scene.selected.remove(node)
+        else:
+            self.scene.selected.add(node)
             
     def getSelectedFeaturesIds(self):
         if self.iface.activeLayer().type() == 0:
