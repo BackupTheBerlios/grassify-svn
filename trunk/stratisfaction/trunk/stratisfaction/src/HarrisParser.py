@@ -18,6 +18,7 @@ from qgis.gui import *
 class HarrisParser(QMainWindow):
     def __init__(self, iface, parent=None):
         QMainWindow.__init__(self, parent)
+        self.iface = iface
 
         self.projname = "Harris"
         self.path = os.environ['HOME']
@@ -27,7 +28,7 @@ class HarrisParser(QMainWindow):
         self.mode = "interact"
         
         self.svg_tree = {}
-        self.iface = iface
+        
         
         self.setGeometry(300, 300, 355, 352)
         self.setWindowTitle('Stratisfaction')
@@ -52,7 +53,7 @@ class HarrisParser(QMainWindow):
         opan = QAction(QIcon(':document-open.png'), 'Open', self)
         opan.setShortcut('Ctrl+O')
         opan.setStatusTip('Open Project File')
-        #self.connect(opan, SIGNAL('triggered()'), self.showDialog)
+        self.connect(opan, SIGNAL('triggered()'), self.opan)
         
         impert = QAction(QIcon(':document-import.png'), 'Import Stratify Data', self)
         impert.setShortcut('Ctrl+I')
@@ -122,11 +123,37 @@ class HarrisParser(QMainWindow):
         print self.projname
         
     def save(self):
-        fobj = open(self.projname + ".spf", "w") 
-        fobj.write("layer_path=" + self.iface.activeLayer().source() + "\n") 
-        for connection in self.connections: 
-            fobj.write("connection=" + str(connection[0]) + "-" + str(connection[1]) + "\n") 
-        fobj.close()
+        if self.iface.activeLayer() != None:
+            if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:        
+                fobj = open(self.projname + ".spf", "w") 
+                fobj.write("layer_path=" + self.iface.activeLayer().source() + "\n") 
+                for connection in self.connections: 
+                    fobj.write("connection=" + str(connection[0]) + "-" + str(connection[1]) + "\n") 
+                fobj.close()
+            else:
+                QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
+        else:
+            QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
+
+    def opan(self):
+        #self.iface.newProject()
+        filename = str(QFileDialog.getOpenFileName(self, 'Open project file', '/home', 'stratisfaction project files (*.spf)'))
+        projpath = filename.rsplit(".", 1)
+        self.draw(projpath[0] + ".svg")
+        self.svg_tree = svgparser.lade_svg(projpath[0] + ".svg")
+        self.scene.setSvg_tree(self.svg_tree)
+        fobj = open(filename, "r")
+        for line in fobj:
+            eintrag = line.split("=");
+            if eintrag[0] == "layer_path":
+                print str(eintrag[1])
+                #self.iface.addVectorLayer(eintrag[1], "Ausgrabung", "ogr")
+            elif eintrag[0] == "connection":
+                connection = eintrag[1].split("-")
+                self.connections.add((int(connection[0]), int(connection[1])))
+        print self.connections
+                
+                
         
         
 #    def showSelected(self):
@@ -202,26 +229,32 @@ class HarrisParser(QMainWindow):
         #print "hoehe: " + str(self.scene.height())
         
     def edit(self):
-        self.scene.removeSelection()
-        self.iface.activeLayer().removeSelection()
-        if self.mode == "interact":
-            self.mode = "edit"
-            self.button = QPushButton("zuweisen", self)
-            self.connect(self.button, SIGNAL('clicked()'), self.makeConnections)
-            self.statusBar().addWidget(self.button)
-            self.button.show()
-            print self.mode + " mode activatet"
+        if self.iface.activeLayer() != None:
+            if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:        
+                self.scene.removeSelection()
+                self.iface.activeLayer().removeSelection()
+                if self.mode == "interact":
+                    self.mode = "edit"
+                    self.button = QPushButton("zuweisen", self)
+                    self.connect(self.button, SIGNAL('clicked()'), self.makeConnections)
+                    self.statusBar().addWidget(self.button)
+                    self.button.show()
+                    print self.mode + " mode activatet"
+                else:
+                    self.mode = "interact"
+                    self.statusBar().removeWidget(self.button)
+                    print self.mode + "ion mode activatet"
+            else:
+                QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
         else:
-            self.mode = "interact"
-            self.statusBar().removeWidget(self.button)
-            print self.mode + "ion mode activatet"
+            QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
             
     def makeConnections(self):
         if self.scene.selected != set([]):
             for node in self.scene.selected:
                 featuresIds = self.getSelectedFeaturesIds()
                 for id in featuresIds:
-                    self.connections.add((node, id))
+                    self.connections.add((int(node), int(id)))
             print self.connections            
         else:
             print "keine Node ausgewaehlt!"
@@ -233,7 +266,7 @@ class HarrisParser(QMainWindow):
             self.scene.selected.add(node)
             
     def getSelectedFeaturesIds(self):
-        if self.iface.activeLayer().type() == 0:
+        if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:
             if int(self.iface.activeLayer().selectedFeatureCount()) >= 1:
                 ids = self.iface.activeLayer().selectedFeaturesIds()
         return ids

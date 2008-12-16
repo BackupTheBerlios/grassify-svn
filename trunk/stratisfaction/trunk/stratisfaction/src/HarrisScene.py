@@ -25,8 +25,10 @@ class HarrisScene(QGraphicsScene):
                 if node in self.selected:        		
                     ids = set()
                     for tupel in self.hp.connections:
-                        if tupel[0] == node:
+                        #print "tupel0: " + str(tupel[0]) + " == node: " + str(node) + " -- " + str(str(tupel[0]) == str(node))
+                        if str(tupel[0]) == str(node):
                             ids.add(tupel[1])
+                    #print ids
                     if self.hp.iface.activeLayer() != None:
                         for id in ids:
                             self.hp.iface.activeLayer().select(id)
