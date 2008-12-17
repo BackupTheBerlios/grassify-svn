@@ -123,15 +123,12 @@ class HarrisParser(QMainWindow):
         print self.projname
         
     def save(self):
-        if self.iface.activeLayer() != None:
-            if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:        
-                fobj = open(self.projname + ".spf", "w") 
-                fobj.write("layer_path=" + self.iface.activeLayer().source() + "\n") 
-                for connection in self.connections: 
-                    fobj.write("connection=" + str(connection[0]) + "-" + str(connection[1]) + "\n") 
-                fobj.close()
-            else:
-                QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
+        if self.iface.activeLayer() != None and self.iface.activeLayer().type() == QgsMapLayer.VECTOR:        
+            fobj = open(self.projname + ".spf", "w") 
+            fobj.write("layer_path=" + self.iface.activeLayer().source() + "\n") 
+            for connection in self.connections: 
+                fobj.write("connection=" + str(connection[0]) + "-" + str(connection[1]) + "\n") 
+            fobj.close()
         else:
             QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
 
@@ -229,8 +226,8 @@ class HarrisParser(QMainWindow):
         #print "hoehe: " + str(self.scene.height())
         
     def edit(self):
-        if self.iface.activeLayer() != None:
-            if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:        
+        if self.iface.activeLayer() != None and self.iface.activeLayer().type() == QgsMapLayer.VECTOR:  
+            if len(self.scene.items()) > 0:     
                 self.scene.removeSelection()
                 self.iface.activeLayer().removeSelection()
                 if self.mode == "interact":
@@ -245,7 +242,7 @@ class HarrisParser(QMainWindow):
                     self.statusBar().removeWidget(self.button)
                     print self.mode + "ion mode activatet"
             else:
-                QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
+                QMessageBox.critical(self, "No Matrix", "Please open an existing Project or\nimport some Stratify data before editing!", QMessageBox.Ok)
         else:
             QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
             
