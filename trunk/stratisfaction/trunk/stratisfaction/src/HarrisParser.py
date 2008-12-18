@@ -30,12 +30,15 @@ class HarrisParser(QMainWindow):
         self.svg_tree = {}
         
         
-        self.setGeometry(300, 300, 355, 352)
+        self.setGeometry(300, 300, 390, 400)
         self.setWindowTitle('Stratisfaction')
 
         
         self.scene = HarrisScene(self)
         self.view = QGraphicsView(self.scene)
+        
+        startscreen = QPixmap(':startscreen.png')
+        self.scene.addItem(QGraphicsPixmapItem(startscreen))
         
         self.view.show()
         
@@ -106,11 +109,12 @@ class HarrisParser(QMainWindow):
 #        print eidi
     
     def showImportDialog(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)')
-        self.parse(filename)
-        self.draw(self.projname + ".svg")
-        self.svg_tree = svgparser.lade_svg(self.projname + ".svg")
-        self.scene.setSvg_tree(self.svg_tree)
+        filename = str(QFileDialog.getOpenFileName(self, 'Open file', '/home', 'CSV-Dateien (*.csv)'))
+        if filename != "":
+            self.parse(filename)
+            self.draw(self.projname + ".svg")
+            self.svg_tree = svgparser.lade_svg(self.projname + ".svg")
+            self.scene.setSvg_tree(self.svg_tree)
         
     def showNewDialog(self):
         dialog = QFileDialog()
@@ -135,20 +139,21 @@ class HarrisParser(QMainWindow):
     def opan(self):
         #self.iface.newProject()
         filename = str(QFileDialog.getOpenFileName(self, 'Open project file', '/home', 'stratisfaction project files (*.spf)'))
-        projpath = filename.rsplit(".", 1)
-        self.draw(projpath[0] + ".svg")
-        self.svg_tree = svgparser.lade_svg(projpath[0] + ".svg")
-        self.scene.setSvg_tree(self.svg_tree)
-        fobj = open(filename, "r")
-        for line in fobj:
-            eintrag = line.split("=");
-            if eintrag[0] == "layer_path":
-                print str(eintrag[1])
-                #self.iface.addVectorLayer(eintrag[1], "Ausgrabung", "ogr")
-            elif eintrag[0] == "connection":
-                connection = eintrag[1].split("-")
-                self.connections.add((int(connection[0]), int(connection[1])))
-        print self.connections
+        if filename != "":
+            projpath = filename.rsplit(".", 1)
+            self.draw(projpath[0] + ".svg")
+            self.svg_tree = svgparser.lade_svg(projpath[0] + ".svg")
+            self.scene.setSvg_tree(self.svg_tree)
+            fobj = open(filename, "r")
+            for line in fobj:
+                eintrag = line.split("=");
+                if eintrag[0] == "layer_path":
+                    print str(eintrag[1])
+                    #self.iface.addVectorLayer(eintrag[1], "Ausgrabung", "ogr")
+                elif eintrag[0] == "connection":
+                    connection = eintrag[1].split("-")
+                    self.connections.add((int(connection[0]), int(connection[1])))
+            print self.connections
                 
                 
         
@@ -247,26 +252,26 @@ class HarrisParser(QMainWindow):
             QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)
             
     def makeConnections(self):
-        if self.scene.selected != set([]):
-            for node in self.scene.selected:
-                featuresIds = self.getSelectedFeaturesIds()
-                for id in featuresIds:
-                    self.connections.add((int(node), int(id)))
-            print self.connections            
+        if self.scene.selected != {}:
+            if self.iface.activeLayer() != None and self.iface.activeLayer().type() == QgsMapLayer.VECTOR:
+                if int(self.iface.activeLayer().selectedFeatureCount()) >= 1:            
+                    for node in self.scene.selected:
+                        featuresIds = self.iface.activeLayer().selectedFeaturesIds()
+                        for id in featuresIds:
+                            self.connections.add((int(node), int(id)))
+                    print self.connections
+                else:
+                    QMessageBox.critical(self, "No Selection", "Please select at least one feature!", QMessageBox.Ok)     
+            else:
+                QMessageBox.critical(self, "No Layer", "Please load at least one Vectorlayer!", QMessageBox.Ok)           
         else:
-            print "keine Node ausgewaehlt!"
+            QMessageBox.critical(self, "No Selection", "Please select at least one node!", QMessageBox.Ok)
             
     def toggleSelected(self, node):
         if node in self.scene.selected:
             self.scene.selected.remove(node)
         else:
             self.scene.selected.add(node)
-            
-    def getSelectedFeaturesIds(self):
-        if self.iface.activeLayer().type() == QgsMapLayer.VECTOR:
-            if int(self.iface.activeLayer().selectedFeatureCount()) >= 1:
-                ids = self.iface.activeLayer().selectedFeaturesIds()
-        return ids
 
 #app = QtGui.QApplication(sys.argv)
 #hp = HarrisParser()

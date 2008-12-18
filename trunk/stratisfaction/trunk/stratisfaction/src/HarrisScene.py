@@ -1,7 +1,16 @@
 #!/usr/bin/python
 
+import sys
+import os
+import svgparser
+from HarrisGraph import *
+from HarrisScene import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from PyQt4.QtSvg import *
+
+from qgis.core import *
+from qgis.gui import *
 
 
 class HarrisScene(QGraphicsScene):
@@ -29,7 +38,7 @@ class HarrisScene(QGraphicsScene):
                         if str(tupel[0]) == str(node):
                             ids.add(tupel[1])
                     #print ids
-                    if self.hp.iface.activeLayer() != None:
+                    if self.hp.iface.activeLayer() != None and self.hp.iface.activeLayer().type() == QgsMapLayer.VECTOR:
                         for id in ids:
                             self.hp.iface.activeLayer().select(id)
                 else:
@@ -38,7 +47,7 @@ class HarrisScene(QGraphicsScene):
                         for tupel in self.hp.connections:
                             if tupel[0] == node:
                                 ids.add(tupel[1])
-                    if self.hp.iface.activeLayer() != None:
+                    if self.hp.iface.activeLayer() != None and self.hp.iface.activeLayer().type() == QgsMapLayer.VECTOR:
                         self.hp.iface.activeLayer().removeSelection()
                         for id in ids:
                             self.hp.iface.activeLayer().select(id)  

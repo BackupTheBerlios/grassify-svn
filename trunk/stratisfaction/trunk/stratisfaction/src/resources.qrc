@@ -6,5 +6,6 @@
         <file>document-open.png</file>
         <file>document-save.png</file>
         <file>stratisfaction_icon.xpm</file>
+        <file>startscreen.png</file>
     </qresource>
 </RCC>
